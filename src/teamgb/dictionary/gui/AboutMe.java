@@ -17,6 +17,10 @@ import javax.swing.border.EmptyBorder;
 
 public class AboutMe extends JDialog {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 290553256433607093L;
 	private final JPanel contentPanel = new JPanel();
 
 
@@ -32,14 +36,13 @@ public class AboutMe extends JDialog {
 		{
 			JLabel lblNewLabel = new JLabel("\u00A9 Gilz");
 			lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-			lblNewLabel.setIcon(new ImageIcon("images\\me.jpg"));
 			contentPanel.add(lblNewLabel);
 		}
 		{
 			JTextPane lblDescription = new JTextPane();
 			lblDescription.setBackground(SystemColor.control);
 			lblDescription.setEditable(false);
-			lblDescription.setText("     This program demonstates XML parsing in Java using Streaming API for XML (StAX).");
+			lblDescription.setText("This is a data entry app for Cebuano Lexicon.");
 			contentPanel.add(lblDescription, BorderLayout.NORTH);
 		}
 		{
