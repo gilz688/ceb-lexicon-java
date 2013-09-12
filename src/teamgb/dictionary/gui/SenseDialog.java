@@ -85,7 +85,7 @@ public class SenseDialog extends JDialog {
 			JLabel lblPOS = new JLabel("POS:");
 			contentPanel.add(lblPOS, "2, 2, right, default");
 		}
-			String pos[] = {"noun","verb","adjective","adverb"};
+			String pos[] = {"noun","verb","adjective","adverb","preposition","conjunction"};
 			posComboBox = new JComboBox(pos);
 			contentPanel.add(posComboBox, "4, 2, 5, 1, fill, default");
 			

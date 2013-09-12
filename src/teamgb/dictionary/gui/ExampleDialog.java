@@ -41,7 +41,7 @@ public class ExampleDialog extends JDialog {
 	 */
 	public ExampleDialog(Example selectedEx, String type) {
 		selected = Choice.CANCEL;
-		setBounds(100, 100, 450, 144);
+		setBounds(100, 100, 498, 144);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -80,7 +80,9 @@ public class ExampleDialog extends JDialog {
 					FormFactory.RELATED_GAP_COLSPEC,
 					ColumnSpec.decode("default:grow"),
 					FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
-					ColumnSpec.decode("424px"),},
+					ColumnSpec.decode("424px:grow"),
+					FormFactory.RELATED_GAP_COLSPEC,
+					FormFactory.DEFAULT_COLSPEC,},
 				new RowSpec[] {
 					FormFactory.LINE_GAP_ROWSPEC,
 					RowSpec.decode("20px"),
@@ -97,7 +99,7 @@ public class ExampleDialog extends JDialog {
 		}
 		
 		textField_Cebuano = new JTextField();
-		contentPanel.add(textField_Cebuano, "4, 2, fill, top");
+		contentPanel.add(textField_Cebuano, "4, 2, default, top");
 		textField_Cebuano.setColumns(10);
 
 		if (selectedEx == null) {

@@ -17,11 +17,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.AbstractDocument;
-import javax.swing.text.DocumentFilter;
 
-import teamgb.dictionary.gui.validation.NumberDocumentFilter;
-import teamgb.dictionary.gui.validation.ValidDocumentListener;
 import teamgb.dictionary.lexicon.Entry;
 import teamgb.dictionary.lexicon.Sense;
 
@@ -85,9 +81,7 @@ public class EntryDialog extends JDialog {
 		}
 
 		idTextField = new JTextField();
-		DocumentFilter filter = new NumberDocumentFilter();
-		AbstractDocument document = (AbstractDocument) idTextField
-				.getDocument();
+		idTextField.setEditable(false);
 
 		contentPanel.add(idTextField, "4, 2, 5, 1, fill, default");
 		idTextField.setColumns(10);
@@ -191,34 +185,28 @@ public class EntryDialog extends JDialog {
 		cancelButton.setActionCommand("Cancel");
 		buttonPane.add(cancelButton);
 
-		document.setDocumentFilter(new NumberDocumentFilter());
-		((AbstractDocument) idTextField.getDocument())
-				.setDocumentFilter(filter);
-		document.addDocumentListener(new DocumentListener() {
-
-			@Override
-			public void changedUpdate(DocumentEvent arg0) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void insertUpdate(DocumentEvent arg0) {
-				// TODO Auto-generated method stub
-
-			}
-
+		lemmaTextField.getDocument().addDocumentListener(new DocumentListener() {
+			
 			@Override
 			public void removeUpdate(DocumentEvent arg0) {
-				// TODO Auto-generated method stub
-
+				updateId();
 			}
-
+			
+			@Override
+			public void insertUpdate(DocumentEvent arg0) {
+				updateId();
+			}
+			
+			@Override
+			public void changedUpdate(DocumentEvent arg0) {
+				updateId();
+			}
+			
+			private void updateId(){
+				idTextField.setText(String.valueOf(lemmaTextField.getText().toString().hashCode()));
+			}
 		});
-		lemmaTextField.getDocument().addDocumentListener(
-				new ValidDocumentListener(okButton, lemmas, lemmaTextField));
-		idTextField.getDocument().addDocumentListener(
-				new ValidDocumentListener(okButton, ids, idTextField));
+
 		if (entry == null) {
 			setTitle("Add New Entry");
 			entry = new Entry();

@@ -1,7 +1,7 @@
 package teamgb.dictionary.lexicon;
 
 public enum PartOfSpeech {
-	NOUN(0,"n","noun"), VERB(1,"v","verb"), ADJECTIVE(2,"adj","adjective"), ADVERB(3,"adv","adverb");
+	NOUN(0,"n","noun"), VERB(1,"v","verb"), ADJECTIVE(2,"adj","adjective"), ADVERB(3,"adv","adverb"), PREPOSITION(4,"pre","preposition"), CONJUNCTION(5,"conj","conjunction");
 	
 	private int type;
 	private String abrev, description;
