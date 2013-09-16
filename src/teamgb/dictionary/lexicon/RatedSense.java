@@ -1,10 +1,10 @@
 package teamgb.dictionary.lexicon;
 
 public class RatedSense implements Comparable<RatedSense>{
-	private Sense sense;
+	private CebuanoLexiconSense sense;
 	private int score;
 	
-	public RatedSense(Sense e, int i){
+	public RatedSense(CebuanoLexiconSense e, int i){
 		score = i;
 		sense = e;
 	}
@@ -18,7 +18,7 @@ public class RatedSense implements Comparable<RatedSense>{
 		return score;
 	}
 	
-	public Sense getSense(){
+	public CebuanoLexiconSense getSense(){
 		return sense;
 	}
 

@@ -40,13 +40,12 @@ public class LexiconUtils {
 	static final String ENG = "ENG";
 	static final String CEB = "CEB";
 
-	public static Lexicon readFromXML(File xmlFile) {
-		Lexicon lex = new Lexicon();
+	public static CebuanoLexicon readFromXML(File xmlFile) {
+		CebuanoLexicon lex = new CebuanoLexicon();
 		try {
 			XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-			InputStreamReader in =  new InputStreamReader(
-	                new FileInputStream( xmlFile ),
-	                Charset.forName( "UTF8" ) );
+			InputStreamReader in = new InputStreamReader(new FileInputStream(
+					xmlFile), Charset.forName("UTF8"));
 			XMLEventReader eventReader = inputFactory.createXMLEventReader(in);
 			while (eventReader.hasNext()) {
 				XMLEvent event = eventReader.nextEvent();
@@ -68,9 +67,10 @@ public class LexiconUtils {
 		return lex;
 	}
 
-	private static List<Entry> readEntries(XMLEventReader eventReader) {
-		List<Entry> entries = new ArrayList<Entry>();
-		Entry entry = null;
+	private static List<CebuanoLexiconEntry> readEntries(
+			XMLEventReader eventReader) {
+		List<CebuanoLexiconEntry> entries = new ArrayList<CebuanoLexiconEntry>();
+		CebuanoLexiconEntry entry = null;
 		while (eventReader.hasNext()) {
 			try {
 				XMLEvent event = eventReader.nextEvent();
@@ -98,8 +98,8 @@ public class LexiconUtils {
 		return null;
 	}
 
-	private static Entry readEntry(XMLEventReader eventReader) {
-		Entry entry = new Entry();
+	private static CebuanoLexiconEntry readEntry(XMLEventReader eventReader) {
+		CebuanoLexiconEntry entry = new CebuanoLexiconEntry();
 		String data = "";
 		while (eventReader.hasNext()) {
 			try {
@@ -144,9 +144,10 @@ public class LexiconUtils {
 		return null;
 	}
 
-	private static List<Sense> readSenses(XMLEventReader eventReader) {
-		List<Sense> senseList = new ArrayList<Sense>();
-		Sense sense = null;
+	private static List<CebuanoLexiconSense> readSenses(
+			XMLEventReader eventReader) {
+		List<CebuanoLexiconSense> senseList = new ArrayList<CebuanoLexiconSense>();
+		CebuanoLexiconSense sense = null;
 		PartOfSpeech pos = null;
 		while (eventReader.hasNext()) {
 			try {
@@ -161,12 +162,13 @@ public class LexiconUtils {
 						while (attributes.hasNext()) {
 							Attribute attribute = attributes.next();
 							if (attribute.getName().toString().equals(POS)) {
-								String value = attribute.getValue().toUpperCase();
+								String value = attribute.getValue()
+										.toUpperCase();
 								pos = PartOfSpeech.valueOf(value);
 							}
 						}
 						sense = readSense(eventReader);
-						if(pos != null)
+						if (pos != null)
 							sense.setPartOfSpeech(pos);
 						if (sense != null)
 							senseList.add(sense);
@@ -189,7 +191,7 @@ public class LexiconUtils {
 		return null;
 	}
 
-	private static List<String> readSublemmas(XMLEventReader eventReader){
+	private static List<String> readSublemmas(XMLEventReader eventReader) {
 		List<String> slList = new ArrayList<String>();
 		String data = "";
 		while (eventReader.hasNext()) {
@@ -202,7 +204,7 @@ public class LexiconUtils {
 					if (startLP.equals(SL_E)) {
 						event = eventReader.nextEvent();
 						data = event.asCharacters().getData();
-					} 
+					}
 					break;
 				case XMLEvent.END_ELEMENT:
 					EndElement endElem = event.asEndElement();
@@ -222,10 +224,10 @@ public class LexiconUtils {
 		System.out.println(SUB_LEMMAS + " not properly terminated");
 		return null;
 	}
-	
-	private static Sense readSense(XMLEventReader eventReader) {
-		Sense sense = new Sense();
-		List<Example> examples = null;
+
+	private static CebuanoLexiconSense readSense(XMLEventReader eventReader) {
+		CebuanoLexiconSense sense = new CebuanoLexiconSense();
+		List<CebuanoLexiconExample> examples = null;
 		String data = "";
 
 		while (eventReader.hasNext()) {
@@ -240,11 +242,11 @@ public class LexiconUtils {
 						data = event.asCharacters().getData();
 					} else if (startLP.equals(SUB_LEMMAS)) {
 						List<String> sublemmas = readSublemmas(eventReader);
-						if(sublemmas != null)
+						if (sublemmas != null)
 							sense.setSublemmas(sublemmas);
-					}else if (startLP.equals(EXAMPLES)) {
+					} else if (startLP.equals(EXAMPLES)) {
 						examples = readExamples(eventReader);
-						if(examples != null)
+						if (examples != null)
 							sense.setExamples(examples);
 					}
 					break;
@@ -267,9 +269,10 @@ public class LexiconUtils {
 		return null;
 	}
 
-	private static List<Example> readExamples(XMLEventReader eventReader) {
-		List<Example> exampleList = new ArrayList<Example>();
-		Example example = null;
+	private static List<CebuanoLexiconExample> readExamples(
+			XMLEventReader eventReader) {
+		List<CebuanoLexiconExample> exampleList = new ArrayList<CebuanoLexiconExample>();
+		CebuanoLexiconExample example = null;
 		String text = "";
 		while (eventReader.hasNext()) {
 			try {
@@ -279,7 +282,7 @@ public class LexiconUtils {
 					StartElement startElem = event.asStartElement();
 					String startLP = startElem.getName().getLocalPart();
 					if (startLP.equals(EXAMPLE_E)) {
-						example = new Example();
+						example = new CebuanoLexiconExample();
 					} else if (startLP.equals(CEB) || startLP.equals(ENG)) {
 						event = eventReader.nextEvent();
 						text = event.asCharacters().getData();
@@ -290,8 +293,8 @@ public class LexiconUtils {
 					String endLP = endElem.getName().getLocalPart();
 					if (endLP.equals(EXAMPLE_E)) {
 						exampleList.add(example);
-					} else if (example == null){
-						
+					} else if (example == null) {
+
 					} else if (endLP.equals(CEB)) {
 						example.setCeb_example(text);
 					} else if (endLP.equals(ENG)) {
@@ -310,14 +313,14 @@ public class LexiconUtils {
 		return null;
 	}
 
-	public static void saveAsXML(Lexicon lex, File file) throws Exception {
+	public static void saveAsXML(CebuanoLexicon lex, File file)
+			throws Exception {
 		// Create a XMLOutputFactory
 		XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
 		// Create XMLEventWriter
 		XMLEventWriter eventWriter = outputFactory
 				.createXMLEventWriter(new OutputStreamWriter(
-		                new FileOutputStream( file ),
-		                Charset.forName( "UTF8" ) ));
+						new FileOutputStream(file), Charset.forName("UTF8")));
 		// Create a EventFactory
 		XMLEventFactory eventFactory = XMLEventFactory.newInstance();
 		XMLEvent end = eventFactory.createDTD("\n");
@@ -332,7 +335,7 @@ public class LexiconUtils {
 		eventWriter.add(configStartElement);
 		eventWriter.add(end);
 		// Write the different entries
-		for (Entry entry : lex.getEntries())
+		for (CebuanoLexiconEntry entry : lex.getEntries())
 			createENTRY(eventWriter, entry);
 
 		eventWriter.add(eventFactory.createEndElement("", "", CEB_LEXICON));
@@ -363,8 +366,8 @@ public class LexiconUtils {
 		eventWriter.add(end);
 	}
 
-	private static void createENTRY(XMLEventWriter eventWriter, Entry entry)
-			throws XMLStreamException {
+	private static void createENTRY(XMLEventWriter eventWriter,
+			CebuanoLexiconEntry entry) throws XMLStreamException {
 		XMLEventFactory eventFactory = XMLEventFactory.newInstance();
 		XMLEvent end = eventFactory.createDTD("\n");
 		XMLEvent tab = eventFactory.createDTD("\t");
@@ -390,7 +393,7 @@ public class LexiconUtils {
 	}
 
 	private static void createSENSES(XMLEventWriter eventWriter,
-			List<Sense> list) throws XMLStreamException {
+			List<CebuanoLexiconSense> list) throws XMLStreamException {
 		XMLEventFactory eventFactory = XMLEventFactory.newInstance();
 		XMLEvent end = eventFactory.createDTD("\n");
 		XMLEvent tab = eventFactory.createDTD("\t\t");
@@ -402,7 +405,7 @@ public class LexiconUtils {
 		eventWriter.add(end);
 
 		// Create Content
-		for (Sense sense : list)
+		for (CebuanoLexiconSense sense : list)
 			createSENSE(eventWriter, sense);
 
 		// Create End node
@@ -412,8 +415,8 @@ public class LexiconUtils {
 		eventWriter.add(end);
 	}
 
-	private static void createSENSE(XMLEventWriter eventWriter, Sense sense)
-			throws XMLStreamException {
+	private static void createSENSE(XMLEventWriter eventWriter,
+			CebuanoLexiconSense sense) throws XMLStreamException {
 		XMLEventFactory eventFactory = XMLEventFactory.newInstance();
 		XMLEvent end = eventFactory.createDTD("\n");
 		XMLEvent tab = eventFactory.createDTD("\t\t\t");
@@ -422,8 +425,8 @@ public class LexiconUtils {
 		StartElement sElement = eventFactory.createStartElement("", "", SENSE);
 		eventWriter.add(tab);
 		eventWriter.add(sElement);
-		eventWriter.add(eventFactory.createAttribute(POS, sense
-				.getPartOfSpeech().getDescription()));
+		eventWriter.add(eventFactory.createAttribute(POS,
+				getPartOfSpeechDescription(sense.getPartOfSpeech())));
 		eventWriter.add(end);
 		// Create Content
 		createList(eventWriter, SUB_LEMMAS, SL_E, sense.getSublemmas(), 4);
@@ -439,7 +442,8 @@ public class LexiconUtils {
 	}
 
 	private static void createExampleList(XMLEventWriter eventWriter,
-			List<Example> list, int level) throws XMLStreamException {
+			List<CebuanoLexiconExample> list, int level)
+			throws XMLStreamException {
 		XMLEventFactory eventFactory = XMLEventFactory.newInstance();
 		XMLEvent end = eventFactory.createDTD("\n");
 
@@ -450,31 +454,32 @@ public class LexiconUtils {
 			t++;
 		}
 		XMLEvent tab = eventFactory.createDTD(tabStr);
-		XMLEvent tab_E = eventFactory.createDTD(tabStr+"\t");
+		XMLEvent tab_E = eventFactory.createDTD(tabStr + "\t");
 		// Create Start node
 		StartElement sElement = eventFactory.createStartElement("", "",
 				EXAMPLES);
 		eventWriter.add(tab);
 		eventWriter.add(sElement);
 		eventWriter.add(end);
-		
+
 		// Create Content
-		for (Example ex : list) {
-			//Start Element for EXAMPLE_E
+		for (CebuanoLexiconExample ex : list) {
+			// Start Element for EXAMPLE_E
 			StartElement sElement_E = eventFactory.createStartElement("", "",
 					EXAMPLE_E);
 			eventWriter.add(tab_E);
 			eventWriter.add(sElement_E);
 			eventWriter.add(end);
-			
+
 			eventWriter.add(tab_E);
 			createNode(eventWriter, CEB, ex.getCeb_example());
 			eventWriter.add(tab_E);
 			createNode(eventWriter, ENG, ex.getEng_example());
-			
+
 			// Create End node for EXAMPLE_E
 			eventWriter.add(tab_E);
-			EndElement eElement_E = eventFactory.createEndElement("", "", EXAMPLE_E);
+			EndElement eElement_E = eventFactory.createEndElement("", "",
+					EXAMPLE_E);
 			eventWriter.add(eElement_E);
 			eventWriter.add(end);
 		}
@@ -516,5 +521,125 @@ public class LexiconUtils {
 		EndElement eElement = eventFactory.createEndElement("", "", name);
 		eventWriter.add(eElement);
 		eventWriter.add(end);
+	}
+
+	public static String getPartOfSpeechAbreviation(PartOfSpeech partOfSpeech) {
+		String abreviation = "";
+		switch (partOfSpeech) {
+		case NOUN:
+			abreviation = "n";
+			break;
+		case VERB:
+			abreviation = "v";
+			break;
+		case ADJECTIVE:
+			abreviation = "adj";
+			break;
+		case ADVERB:
+			abreviation = "adv";
+			break;
+		case PREPOSITION:
+			abreviation = "prep";
+			break;
+		case CONJUNCTION:
+			abreviation = "conj";
+			break;
+		case INTERJECTION:
+			abreviation = "intr";
+			break;
+		case ARTICLE:
+			abreviation = "a";
+			break;
+		case PARTICIPLE:
+			abreviation = "p";
+		default:
+		}
+		return abreviation;
+	}
+
+	public static String getPartOfSpeechDescription(PartOfSpeech partOfSpeech) {
+		String description = "";
+		switch (partOfSpeech) {
+		case NOUN:
+			description = "noun";
+			break;
+		case VERB:
+			description = "verb";
+			break;
+		case ADJECTIVE:
+			description = "adjective";
+			break;
+		case ADVERB:
+			description = "adverb";
+			break;
+		case PREPOSITION:
+			description = "preposition";
+			break;
+		case CONJUNCTION:
+			description = "conjunction";
+			break;
+		case INTERJECTION:
+			description = "interjection";
+			break;
+		case ARTICLE:
+			description = "article";
+			break;
+		case PARTICIPLE:
+			description = "participle";
+			break;
+		default:
+		}
+		return description;
+	}
+
+	public static String generateHtml(CebuanoLexiconEntry entry) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("ID: <b>");
+		sb.append(entry.getId());
+		sb.append("<br></b>LEMMA: <b>");
+		sb.append(entry.getLemma());
+		sb.append("</b><br>SENSES:");
+		List<CebuanoLexiconSense> senses = entry.getSenses();
+		if (senses.size() > 0)
+			sb.append("<ul>");
+		for (CebuanoLexiconSense s : senses) {
+			sb.append("<li>");
+			sb.append(generateHtml(s,false));
+			sb.append("</li>");
+		}
+		if (senses.size() > 0)
+			sb.append("</ul>");
+		return sb.toString();
+	}
+	
+	public static String generateHtml(CebuanoLexiconSense sense, boolean inc) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("(<font color=\"blue\">");
+		sb.append(getPartOfSpeechAbreviation(sense.getPartOfSpeech()));
+		sb.append(")</font> ");
+		List<String> sublemmas = sense.getSublemmas();
+		if(inc){
+			sb.append(sense.getLemma());
+			if(sublemmas.size() > 0) sb.append(", ");
+		}
+		Iterator iter = sublemmas.iterator();
+		while(iter.hasNext()){
+			sb.append(iter.next());
+			if(iter.hasNext()) sb.append(", ");
+		}
+		sb.append(" (");
+		sb.append(sense.getGloss());
+		sb.append(") ");
+		
+		iter = sense.getExamples().iterator();
+		while(iter.hasNext()){
+			sb.append("<i>\"");
+			sb.append(iter.next());
+			sb.append("</i>\"");
+			if(iter.hasNext())
+				sb.append("; ");
+		}
+		sb.append("</i>");
+		return sb.toString();
 	}
 }

@@ -17,9 +17,9 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import teamgb.dictionary.gui.validation.EmptyDocumentListener;
-import teamgb.dictionary.lexicon.Example;
+import teamgb.dictionary.lexicon.CebuanoLexiconExample;
 import teamgb.dictionary.lexicon.PartOfSpeech;
-import teamgb.dictionary.lexicon.Sense;
+import teamgb.dictionary.lexicon.CebuanoLexiconSense;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -36,7 +36,7 @@ public class SenseDialog extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JComboBox posComboBox;
 	private Choice selected;
-	private Sense sense;
+	private CebuanoLexiconSense sense;
 	private JTextField glossTextField;
 
 	public enum Choice {
@@ -46,7 +46,7 @@ public class SenseDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public SenseDialog(Sense pSense) {
+	public SenseDialog(CebuanoLexiconSense pSense) {
 		sense = pSense;
 		selected = Choice.CANCEL;
 		setBounds(100, 100, 500, 412);
@@ -169,14 +169,14 @@ public class SenseDialog extends JDialog {
 
 		JScrollPane exScrollPane = new JScrollPane();
 		contentPanel.add(exScrollPane, "4, 12, 5, 3, fill, fill");
-		final DefaultListModel<Example> lmEx = new DefaultListModel<Example>();
-		final JList<Example> examplesList = new JList<Example>(lmEx);
+		final DefaultListModel<CebuanoLexiconExample> lmEx = new DefaultListModel<CebuanoLexiconExample>();
+		final JList<CebuanoLexiconExample> examplesList = new JList<CebuanoLexiconExample>(lmEx);
 		exScrollPane.setViewportView(examplesList);
 		final JButton btnEditEx = new JButton("Edit");
 			btnEditEx.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					try {
-						Example selectedEx = (Example) examplesList.getSelectedValue();
+						CebuanoLexiconExample selectedEx = (CebuanoLexiconExample) examplesList.getSelectedValue();
 						int index = examplesList.getSelectedIndex();
 						ExampleDialog dialog = new ExampleDialog(selectedEx,"EXAMPLE-E");
 						ExampleDialog.Choice choice = dialog.showDialog();
@@ -229,7 +229,7 @@ public class SenseDialog extends JDialog {
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						selected = Choice.OK;
-						sense = new Sense();
+						sense = new CebuanoLexiconSense();
 						sense.setPartOfSpeech(PartOfSpeech.valueOf(posComboBox.getSelectedItem().toString().toUpperCase()));
 						sense.setGloss(glossTextField.getText());
 						sense.setExamples(lmEx.toArray());
@@ -257,17 +257,17 @@ public class SenseDialog extends JDialog {
 		if(sense == null){
 			setTitle("Add New SENSE");
 			okButton.setEnabled(false);
-			sense = new Sense();
+			sense = new CebuanoLexiconSense();
 			btnEditSL.setEnabled(false);
 			btnEditEx.setEnabled(false);
 		}
 		else{
 			setTitle("Edit SENSE");
-			posComboBox.setSelectedIndex(sense.getPartOfSpeech().getType());
+			posComboBox.setSelectedIndex(sense.getPartOfSpeech().ordinal());
 			glossTextField.setText(sense.getGloss());
 			for(String sl : sense.getSublemmas())
 				lmSL.addElement(sl);
-			for(Example ex : sense.getExamples())
+			for(CebuanoLexiconExample ex : sense.getExamples())
 				lmEx.addElement(ex);
 			
 			if(lmSL.isEmpty())
@@ -286,7 +286,7 @@ public class SenseDialog extends JDialog {
 		return selected;
 	}
 
-	public Sense getInput(){
+	public CebuanoLexiconSense getInput(){
 		return sense;
 	}
 

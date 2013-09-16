@@ -4,25 +4,25 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Lexicon {
-	private List<Entry> entries;
+public class CebuanoLexicon {
+	private List<CebuanoLexiconEntry> entries;
 	
-	public Lexicon() {
-		entries = new ArrayList<Entry>();
+	public CebuanoLexicon() {
+		entries = new ArrayList<CebuanoLexiconEntry>();
 	}
 	
-	public boolean addEntry(Entry e){
+	public boolean addEntry(CebuanoLexiconEntry e){
 		return entries.add(e);
 	}
 	
-	public List<Entry> getEntries(){
+	public List<CebuanoLexiconEntry> getEntries(){
 		return entries;
 	}
 	
 	public void setEntries(Object[] array) {
-		entries = new ArrayList<Entry>();
+		entries = new ArrayList<CebuanoLexiconEntry>();
 		for(Object o : array)
-			entries.add((Entry) o);
+			entries.add((CebuanoLexiconEntry) o);
 	}
 	
 	public List<String> getIds(){
@@ -33,9 +33,9 @@ public class Lexicon {
 		Collections.sort(entries);
 	}
 	
-	public List<String> getIds(Entry s){
+	public List<String> getIds(CebuanoLexiconEntry s){
 		List<String> ids = new ArrayList<String>();
-		for(Entry e: entries){
+		for(CebuanoLexiconEntry e: entries){
 			if(s== null || !(e.getId() == s.getId()) )
 				ids.add(String.valueOf(e.getId()));
 		}
@@ -46,16 +46,16 @@ public class Lexicon {
 		return getLemmas(null);
 	}
 	
-	public List<String> getLemmas(Entry s){
+	public List<String> getLemmas(CebuanoLexiconEntry s){
 		List<String> lemmas = new ArrayList<String>();
-		for(Entry e: entries){
+		for(CebuanoLexiconEntry e: entries){
 			if(s==null || !(e.getLemma() == s.getLemma()))
 				lemmas.add(e.getLemma());
 		}
 		return lemmas;
 	}
 
-	public void setEntries(List<Entry> readEntries) {
+	public void setEntries(List<CebuanoLexiconEntry> readEntries) {
 		entries = readEntries;
 	}
 	

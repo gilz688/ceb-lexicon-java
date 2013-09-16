@@ -12,7 +12,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import teamgb.dictionary.gui.validation.EmptyDocumentListener;
-import teamgb.dictionary.lexicon.Example;
+import teamgb.dictionary.lexicon.CebuanoLexiconExample;
 
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -39,7 +39,7 @@ public class ExampleDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public ExampleDialog(Example selectedEx, String type) {
+	public ExampleDialog(CebuanoLexiconExample selectedEx, String type) {
 		selected = Choice.CANCEL;
 		setBounds(100, 100, 498, 144);
 		getContentPane().setLayout(new BorderLayout());
@@ -104,7 +104,7 @@ public class ExampleDialog extends JDialog {
 
 		if (selectedEx == null) {
 			setTitle("Add New " + type);
-			selectedEx = new Example();
+			selectedEx = new CebuanoLexiconExample();
 			okButton.setEnabled(false);
 		} else {
 			setTitle("Edit " + type);
@@ -121,8 +121,8 @@ public class ExampleDialog extends JDialog {
 		return selected;
 	}
 
-	public Example getInput() {
-		Example ex = new Example();
+	public CebuanoLexiconExample getInput() {
+		CebuanoLexiconExample ex = new CebuanoLexiconExample();
 		ex.setEng_example(textField_English.getText());
 		ex.setCeb_example(textField_Cebuano.getText());
 		return ex;

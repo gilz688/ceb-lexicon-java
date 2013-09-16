@@ -1,6 +1,6 @@
 package teamgb.dictionary.lexicon;
 
-public class Example {
+public class CebuanoLexiconExample {
 	private String eng_example;
 	private String ceb_example;
 	

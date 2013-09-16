@@ -18,8 +18,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import teamgb.dictionary.lexicon.Entry;
-import teamgb.dictionary.lexicon.Sense;
+import teamgb.dictionary.gui.validation.EmptyDocumentListener;
+import teamgb.dictionary.lexicon.CebuanoLexiconEntry;
+import teamgb.dictionary.lexicon.CebuanoLexiconSense;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -35,7 +36,7 @@ public class EntryDialog extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JTextField idTextField;
 	private JTextField lemmaTextField;
-	private Entry entry;
+	private CebuanoLexiconEntry entry;
 	private Choice selected;
 
 	public enum Choice {
@@ -45,7 +46,7 @@ public class EntryDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public EntryDialog(Entry pEntry, List<String> ids, List<String> lemmas) {
+	public EntryDialog(CebuanoLexiconEntry pEntry, List<String> ids, List<String> lemmas) {
 		selected = Choice.CANCEL;
 		entry = pEntry;
 		setBounds(100, 100, 400, 300);
@@ -100,17 +101,17 @@ public class EntryDialog extends JDialog {
 			contentPanel.add(lblSenses, "2, 6");
 		}
 
-		final DefaultListModel<Sense> lmSenses = new DefaultListModel<Sense>();
+		final DefaultListModel<CebuanoLexiconSense> lmSenses = new DefaultListModel<CebuanoLexiconSense>();
 		JScrollPane sensesScrollPane = new JScrollPane();
 		contentPanel.add(sensesScrollPane, "4, 6, 5, 5, fill, fill");
-		final JList<Sense> sensesList = new JList<Sense>(lmSenses);
+		final JList<CebuanoLexiconSense> sensesList = new JList<CebuanoLexiconSense>(lmSenses);
 		sensesScrollPane.setViewportView(sensesList);
 
 		final JButton btnEdit = new JButton("Edit");
 		btnEdit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					Sense selectedSense = (Sense) sensesList.getSelectedValue();
+					CebuanoLexiconSense selectedSense = (CebuanoLexiconSense) sensesList.getSelectedValue();
 					int index = sensesList.getSelectedIndex();
 					SenseDialog dialog = new SenseDialog(selectedSense);
 					SenseDialog.Choice choice = dialog.showDialog();
@@ -162,7 +163,7 @@ public class EntryDialog extends JDialog {
 		final JButton okButton = new JButton("OK");
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				entry = new Entry();
+				entry = new CebuanoLexiconEntry();
 				entry.setId(Integer.parseInt(idTextField.getText()));
 				entry.setLemma(lemmaTextField.getText());
 				entry.setSenses(lmSenses.toArray());
@@ -185,6 +186,7 @@ public class EntryDialog extends JDialog {
 		cancelButton.setActionCommand("Cancel");
 		buttonPane.add(cancelButton);
 
+		lemmaTextField.getDocument().addDocumentListener(new EmptyDocumentListener(okButton));
 		lemmaTextField.getDocument().addDocumentListener(new DocumentListener() {
 			
 			@Override
@@ -209,13 +211,13 @@ public class EntryDialog extends JDialog {
 
 		if (entry == null) {
 			setTitle("Add New Entry");
-			entry = new Entry();
+			entry = new CebuanoLexiconEntry();
 			okButton.setEnabled(false);
 		} else {
 			setTitle("Edit Entry");
 			idTextField.setText(String.valueOf(entry.getId()));
 			lemmaTextField.setText(entry.getLemma());
-			for (Sense s : entry.getSenses())
+			for (CebuanoLexiconSense s : entry.getSenses())
 				lmSenses.addElement(s);
 		}
 		if (lmSenses.isEmpty())
@@ -230,7 +232,7 @@ public class EntryDialog extends JDialog {
 		return selected;
 	}
 
-	public Entry getInput() {
+	public CebuanoLexiconEntry getInput() {
 		return entry;
 	}
 

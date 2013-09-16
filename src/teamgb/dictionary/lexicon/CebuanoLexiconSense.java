@@ -1,13 +1,12 @@
 package teamgb.dictionary.lexicon;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-public class Sense {
+public class CebuanoLexiconSense {
 	private PartOfSpeech pos;
 	private String lemma, gloss;
 	private List<String> sublemmas;
-	List<Example> examples;
+	List<CebuanoLexiconExample> examples;
 	
 	public PartOfSpeech getPartOfSpeech() {
 		return pos;
@@ -17,12 +16,12 @@ public class Sense {
 		this.pos = pos;
 	}
 	
-	public Sense(){
+	public CebuanoLexiconSense(){
 		lemma = new String();
 		pos = null;
 		this.sublemmas = new ArrayList<String>();
 		this.gloss = null;
-		this.examples = new ArrayList<Example>();
+		this.examples = new ArrayList<CebuanoLexiconExample>();
 	}
 	
 	public void setLemma(String l){
@@ -33,11 +32,11 @@ public class Sense {
 		return lemma;
 	}
 	
-	public Sense(PartOfSpeech pos) {
+	public CebuanoLexiconSense(PartOfSpeech pos) {
 		this.pos = pos;
 		this.sublemmas = new ArrayList<String>();
 		this.gloss = new String();
-		this.examples = new ArrayList<Example>();
+		this.examples = new ArrayList<CebuanoLexiconExample>();
 	}
 	
 	public List<String> getSublemmas() {
@@ -46,39 +45,9 @@ public class Sense {
 
 	@Override
 	public String toString() {
-		return "<html>" + asHtml(false) + "</html>";
+		return "<html>" + LexiconUtils.generateHtml(this,false) + "</html>";
 	}
 	
-	public String asHtml(boolean inc) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("(<font color=\"blue\">");
-		sb.append(pos.getAbrev());
-		sb.append(")</font> ");
-		if(inc){
-			sb.append(lemma);
-			if(sublemmas.size() > 0) sb.append(", ");
-		}
-		Iterator iter = sublemmas.iterator();
-		while(iter.hasNext()){
-			sb.append(iter.next());
-			if(iter.hasNext()) sb.append(", ");
-		}
-		sb.append(" (");
-		sb.append(gloss);
-		sb.append(") ");
-		
-		iter = examples.iterator();
-		while(iter.hasNext()){
-			sb.append("<i>\"");
-			sb.append(iter.next());
-			sb.append("</i>\"");
-			if(iter.hasNext())
-				sb.append("; ");
-		}
-		sb.append("</i>");
-		return sb.toString();
-	}
-
 	public void setSublemmas(List<String> sublemmas) {
 		this.sublemmas = sublemmas;
 	}
@@ -95,22 +64,22 @@ public class Sense {
 		this.gloss = gloss;
 	}
 
-	public List<Example> getExamples() {
+	public List<CebuanoLexiconExample> getExamples() {
 		return examples;
 	}
 
-	public void setExamples(List<Example> examples) {
+	public void setExamples(List<CebuanoLexiconExample> examples) {
 		this.examples = examples;
 	}
 	
-	public boolean addExample(Example example){
+	public boolean addExample(CebuanoLexiconExample example){
 		return examples.add(example);
 	}
 
 	public void setExamples(Object[] e) {
-		examples = new ArrayList<Example>();
+		examples = new ArrayList<CebuanoLexiconExample>();
 		for(Object object : e){
-			Example ex = (Example) object;
+			CebuanoLexiconExample ex = (CebuanoLexiconExample) object;
 			if(ex!=null)
 				examples.add(ex);
 		}

@@ -37,11 +37,11 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import notmycode.StringUtils.Levenshtein;
-import teamgb.dictionary.lexicon.Entry;
-import teamgb.dictionary.lexicon.Lexicon;
+import teamgb.dictionary.lexicon.CebuanoLexiconEntry;
+import teamgb.dictionary.lexicon.CebuanoLexicon;
 import teamgb.dictionary.lexicon.LexiconUtils;
 import teamgb.dictionary.lexicon.RatedSense;
-import teamgb.dictionary.lexicon.Sense;
+import teamgb.dictionary.lexicon.CebuanoLexiconSense;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -52,10 +52,10 @@ public class MainWindow {
 
 	private JFrame frame;
 	private JTextField searchTextField;
-	private DefaultListModel<Entry> lmEntries;
+	private DefaultListModel<CebuanoLexiconEntry> lmEntries;
 	private File cFile;
-	private Lexicon lex;
-	private JList<Entry> list;
+	private CebuanoLexicon lex;
+	private JList<CebuanoLexiconEntry> list;
 	private JTextPane textArea;
 	private JMenuItem mntmRemoveEntry;
 	private JMenuItem mntmEditSelectedEntry;
@@ -230,8 +230,8 @@ public class MainWindow {
 		JScrollPane listScrollPane = new JScrollPane();
 		frame.getContentPane().add(listScrollPane, "2, 4, 3, 1, fill, fill");
 
-		lmEntries = new DefaultListModel<Entry>();
-		list = new JList<Entry>(lmEntries);
+		lmEntries = new DefaultListModel<CebuanoLexiconEntry>();
+		list = new JList<CebuanoLexiconEntry>(lmEntries);
 		list.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent ke) {
@@ -260,7 +260,7 @@ public class MainWindow {
 			@Override
 			public void mouseClicked(MouseEvent me) {
 				if(me.getClickCount() == 2){
-					Entry s = list.getSelectedValue();
+					CebuanoLexiconEntry s = list.getSelectedValue();
 					if(s != null){
 						try {
 							int index = list.getSelectedIndex();
@@ -283,7 +283,7 @@ public class MainWindow {
 		mntmEditSelectedEntry.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					Entry s = (Entry) list.getSelectedValue();
+					CebuanoLexiconEntry s = (CebuanoLexiconEntry) list.getSelectedValue();
 					int index = list.getSelectedIndex();
 					EntryDialog dialog = new EntryDialog(s, lex.getIds(s), lex
 							.getLemmas(s));
@@ -307,7 +307,7 @@ public class MainWindow {
 				openChooser.setFileFilter(openFilter);
 				int returnVal = openChooser.showOpenDialog(frame);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					lex = new Lexicon();
+					lex = new CebuanoLexicon();
 					lmEntries.clear();
 					if (cFile != null) {
 						int dialogButton = JOptionPane.YES_NO_OPTION;
@@ -337,7 +337,7 @@ public class MainWindow {
 					} else {
 						lex = LexiconUtils.readFromXML(cFile);
 						lex.sort();
-						for (Entry entry : lex.getEntries())
+						for (CebuanoLexiconEntry entry : lex.getEntries())
 							lmEntries.addElement(entry);
 						mntmAddEntry.setEnabled(true);
 						mntmSaveAs.setEnabled(true);
@@ -401,18 +401,18 @@ public class MainWindow {
 		sb.append("<html><strong>Search Results:</strong><br><br>");
 		if (bySense) {
 			ArrayList<RatedSense> res = new ArrayList<RatedSense>();
-			for (Entry e : lex.getEntries()) {
+			for (CebuanoLexiconEntry e : lex.getEntries()) {
 				int diff = 0;
 				String lemma = e.getLemma();
 				if (lemma.startsWith(text)) {
 					diff = Levenshtein.getLevenshteinDistance(lemma, text);
-					for (Sense s : e.getSenses()) {
+					for (CebuanoLexiconSense s : e.getSenses()) {
 						res.add(new RatedSense(s, diff));
 					}
 					continue;
 				}
 
-				for (Sense s : e.getSenses()) {
+				for (CebuanoLexiconSense s : e.getSenses()) {
 					for (String sl : s.getSublemmas()) {
 						diff = Levenshtein.getLevenshteinDistance(sl, text);
 						if (sl.startsWith(text)) {
@@ -424,14 +424,14 @@ public class MainWindow {
 			Collections.sort(res);
 			for (RatedSense rs : res) {
 				sb.append("S: ");
-				sb.append(rs.getSense().asHtml(true));
+				sb.append(LexiconUtils.generateHtml(rs.getSense(),true));
 				sb.append("<br><br>");
 			}
 
 		} else {
-			for (Entry entry : lex.getEntries()) {
+			for (CebuanoLexiconEntry entry : lex.getEntries()) {
 				if (entry.getLemma().startsWith(text))
-					sb.append(entry.asHtml());
+					sb.append(LexiconUtils.generateHtml(entry));
 			}
 		}
 		sb.append("</html>");
@@ -464,9 +464,9 @@ public class MainWindow {
 		updateLexicon();
 		if (cFile != null)
 			frame.setTitle(cFile.getAbsolutePath());
-		Entry selected = (Entry) list.getSelectedValue();
+		CebuanoLexiconEntry selected = (CebuanoLexiconEntry) list.getSelectedValue();
 		if (selected != null) {
-			textArea.setText("<html>" + selected.asHtml() + "</html>");
+			textArea.setText("<html>" + LexiconUtils.generateHtml(selected) + "</html>");
 			mntmRemoveEntry.setEnabled(true);
 			mntmEditSelectedEntry.setEnabled(true);
 			textArea.select(1, 1);
@@ -476,7 +476,7 @@ public class MainWindow {
 	}
 
 	private void updateLexicon() {
-		lex = new Lexicon();
+		lex = new CebuanoLexicon();
 		lex.setEntries(lmEntries.toArray());
 	}
 	
@@ -486,7 +486,7 @@ public class MainWindow {
 		Arrays.sort(entries);
 		lmEntries.removeAllElements();
 		for (Object obj : entries)
-			lmEntries.addElement((Entry) obj);
+			lmEntries.addElement((CebuanoLexiconEntry) obj);
 		refresh();
 	}
 }
