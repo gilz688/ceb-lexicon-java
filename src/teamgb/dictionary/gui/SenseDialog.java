@@ -25,6 +25,7 @@ import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
+import javax.swing.DefaultComboBoxModel;
 
 
 public class SenseDialog extends JDialog {
@@ -85,8 +86,7 @@ public class SenseDialog extends JDialog {
 			JLabel lblPOS = new JLabel("POS:");
 			contentPanel.add(lblPOS, "2, 2, right, default");
 		}
-			String pos[] = {"noun","verb","adjective","adverb","preposition","conjunction"};
-			posComboBox = new JComboBox(pos);
+			posComboBox = new JComboBox(new DefaultComboBoxModel(PartOfSpeech.values()));
 			contentPanel.add(posComboBox, "4, 2, 5, 1, fill, default");
 			
 		{
@@ -230,7 +230,7 @@ public class SenseDialog extends JDialog {
 					public void actionPerformed(ActionEvent e) {
 						selected = Choice.OK;
 						sense = new CebuanoLexiconSense();
-						sense.setPartOfSpeech(PartOfSpeech.valueOf(posComboBox.getSelectedItem().toString().toUpperCase()));
+						sense.setPartOfSpeech(PartOfSpeech.valueOf(posComboBox.getSelectedItem().toString()));
 						sense.setGloss(glossTextField.getText());
 						sense.setExamples(lmEx.toArray());
 						sense.setSublemmas(lmSL.toArray());
@@ -263,7 +263,8 @@ public class SenseDialog extends JDialog {
 		}
 		else{
 			setTitle("Edit SENSE");
-			posComboBox.setSelectedIndex(sense.getPartOfSpeech().ordinal());
+			if(sense.getPartOfSpeech() != null)
+				posComboBox.setSelectedItem(sense.getPartOfSpeech());
 			glossTextField.setText(sense.getGloss());
 			for(String sl : sense.getSublemmas())
 				lmSL.addElement(sl);

@@ -164,7 +164,8 @@ public class LexiconUtils {
 							if (attribute.getName().toString().equals(POS)) {
 								String value = attribute.getValue()
 										.toUpperCase();
-								pos = PartOfSpeech.valueOf(value);
+								if(value != null && value.length() != 0)
+									pos = PartOfSpeech.valueOf(value);
 							}
 						}
 						sense = readSense(eventReader);
@@ -425,7 +426,8 @@ public class LexiconUtils {
 		StartElement sElement = eventFactory.createStartElement("", "", SENSE);
 		eventWriter.add(tab);
 		eventWriter.add(sElement);
-		eventWriter.add(eventFactory.createAttribute(POS,
+		if(sense.getPartOfSpeech() != null)
+			eventWriter.add(eventFactory.createAttribute(POS,
 				getPartOfSpeechDescription(sense.getPartOfSpeech())));
 		eventWriter.add(end);
 		// Create Content
@@ -525,6 +527,8 @@ public class LexiconUtils {
 
 	public static String getPartOfSpeechAbreviation(PartOfSpeech partOfSpeech) {
 		String abreviation = "";
+		if(partOfSpeech == null)
+			return "n/a";
 		switch (partOfSpeech) {
 		case NOUN:
 			abreviation = "n";
@@ -547,8 +551,8 @@ public class LexiconUtils {
 		case INTERJECTION:
 			abreviation = "intr";
 			break;
-		case ARTICLE:
-			abreviation = "a";
+		case PARTICLE:
+			abreviation = "p";
 			break;
 		case PARTICIPLE:
 			abreviation = "p";
@@ -581,8 +585,8 @@ public class LexiconUtils {
 		case INTERJECTION:
 			description = "interjection";
 			break;
-		case ARTICLE:
-			description = "article";
+		case PARTICLE:
+			description = "particle";
 			break;
 		case PARTICIPLE:
 			description = "participle";
