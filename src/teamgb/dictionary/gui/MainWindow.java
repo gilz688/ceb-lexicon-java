@@ -12,7 +12,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
@@ -32,16 +34,17 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import notmycode.StringUtils.Levenshtein;
-import teamgb.dictionary.lexicon.CebuanoLexiconEntry;
 import teamgb.dictionary.lexicon.CebuanoLexicon;
+import teamgb.dictionary.lexicon.CebuanoLexiconEntry;
+import teamgb.dictionary.lexicon.CebuanoLexiconSense;
 import teamgb.dictionary.lexicon.LexiconUtils;
 import teamgb.dictionary.lexicon.RatedSense;
-import teamgb.dictionary.lexicon.CebuanoLexiconSense;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -64,7 +67,7 @@ public class MainWindow {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		
+
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -88,7 +91,7 @@ public class MainWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame("Cebuano Lexicon - Data Entry");
+		frame = new JFrame("Cebuano Dictionary - Data Entry");
 		frame.setBounds(100, 100, 612, 350);
 		frame.setPreferredSize(new Dimension(600, 350));
 		frame.pack();
@@ -103,9 +106,9 @@ public class MainWindow {
 
 		JMenuItem mntmOpen = new JMenuItem("Open XML file");
 		mnFile.add(mntmOpen);
-
-		JSeparator separator_2 = new JSeparator();
-		mnFile.add(separator_2);
+		
+		JSeparator separator = new JSeparator();
+		mnFile.add(separator);
 
 		final JMenuItem mntmSave = new JMenuItem("Save");
 		mntmSave.setEnabled(false);
@@ -133,11 +136,13 @@ public class MainWindow {
 		mntmAddEntry.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					EntryDialog dialog = new EntryDialog(null, lex.getIds(),
-							lex.getLemmas());
+					EntryDialog dialog = new EntryDialog(null, LexiconUtils
+							.getIds(lex), LexiconUtils.getLemmas(lex));
 					EntryDialog.Choice choice = dialog.showDialog();
 					if (choice == EntryDialog.Choice.OK) {
 						lmEntries.addElement(dialog.getInput());
+						mntmSaveAs.setEnabled(true);
+						mntmSave.setEnabled(true);
 						sortLM();
 						refresh();
 					}
@@ -165,7 +170,7 @@ public class MainWindow {
 		mntmABout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					AboutMe dialog = new AboutMe();
+					AboutUsDialog dialog = new AboutUsDialog();
 					dialog.setTitle("About");
 					dialog.setPreferredSize(new Dimension(280, 180));
 					dialog.setModalityType(SenseDialog.ModalityType.APPLICATION_MODAL);
@@ -227,6 +232,28 @@ public class MainWindow {
 						rdbtnSense.isSelected()));
 			}
 		});
+		
+		JButton btnStatistics = new JButton("Statistics");
+		btnStatistics.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				try {
+					StatsDialog dialog = new StatsDialog(lex);
+					dialog.setTitle("Lexicon Statistics");
+					dialog.setPreferredSize(new Dimension(400, 220));
+					dialog.setModalityType(SenseDialog.ModalityType.APPLICATION_MODAL);
+					dialog.setResizable(false);
+					dialog.pack();
+					dialog.setLocationRelativeTo(null);
+					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					dialog.setVisible(true);
+				} catch (Exception e) {
+					
+				}
+				
+			}
+		});
+		frame.getContentPane().add(btnStatistics, "8, 2");
 
 		JScrollPane listScrollPane = new JScrollPane();
 		frame.getContentPane().add(listScrollPane, "2, 4, 3, 1, fill, fill");
@@ -236,7 +263,7 @@ public class MainWindow {
 		list.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent ke) {
-				if(ke.getKeyCode() == KeyEvent.VK_DELETE){
+				if (ke.getKeyCode() == KeyEvent.VK_DELETE) {
 					int index = list.getSelectedIndex();
 					if (index != -1) {
 						lmEntries.remove(index);
@@ -253,6 +280,9 @@ public class MainWindow {
 		frame.getContentPane().add(entryScrollPane, "6, 4, 3, 1, fill, fill");
 
 		textArea = new JTextPane();
+		Border border = BorderFactory.createEmptyBorder();
+		textArea.setBorder(BorderFactory.createCompoundBorder(border, 
+		            BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 		textArea.setContentType("text/html");
 		textArea.setEditable(false);
 		entryScrollPane.setViewportView(textArea);
@@ -260,13 +290,14 @@ public class MainWindow {
 		list.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent me) {
-				if(me.getClickCount() == 2){
+				if (me.getClickCount() == 2) {
 					CebuanoLexiconEntry s = list.getSelectedValue();
-					if(s != null){
+					if (s != null) {
 						try {
 							int index = list.getSelectedIndex();
-							EntryDialog dialog = new EntryDialog(s, lex.getIds(s), lex
-									.getLemmas(s));
+							EntryDialog dialog = new EntryDialog(s,
+									LexiconUtils.getIds(lex, s), LexiconUtils
+											.getLemmas(lex, s));
 							EntryDialog.Choice choice = dialog.showDialog();
 							if (choice == EntryDialog.Choice.OK) {
 								lmEntries.set(index, dialog.getInput());
@@ -280,14 +311,15 @@ public class MainWindow {
 				}
 			}
 		});
-		
+
 		mntmEditSelectedEntry.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					CebuanoLexiconEntry s = (CebuanoLexiconEntry) list.getSelectedValue();
+					CebuanoLexiconEntry s = (CebuanoLexiconEntry) list
+							.getSelectedValue();
 					int index = list.getSelectedIndex();
-					EntryDialog dialog = new EntryDialog(s, lex.getIds(s), lex
-							.getLemmas(s));
+					EntryDialog dialog = new EntryDialog(s, LexiconUtils
+							.getIds(lex, s), LexiconUtils.getLemmas(lex, s));
 					EntryDialog.Choice choice = dialog.showDialog();
 					if (choice == EntryDialog.Choice.OK) {
 						lmEntries.set(index, dialog.getInput());
@@ -312,11 +344,9 @@ public class MainWindow {
 					lmEntries.clear();
 					if (cFile != null) {
 						int dialogButton = JOptionPane.YES_NO_OPTION;
-						int dialogResult = JOptionPane
-								.showConfirmDialog(
-										null,
-										"Are you sure you want to open another file?",
-										"Warning", dialogButton);
+						int dialogResult = JOptionPane.showConfirmDialog(null,
+								"Are you sure you want to open another file?",
+								"Warning", dialogButton);
 						if (dialogResult == JOptionPane.NO_OPTION) {
 							return;
 						}
@@ -325,10 +355,11 @@ public class MainWindow {
 
 					if (!cFile.exists()) {
 						String name = cFile.getName();
-						if(!name.endsWith(".xml"))
-							cFile = new File(cFile.getParent(), name.concat(".xml"));
+						if (!name.endsWith(".xml"))
+							cFile = new File(cFile.getParent(), name
+									.concat(".xml"));
 						try {
-							LexiconUtils.saveAsXML(lex,cFile);
+							LexiconUtils.saveAsXML(lex, cFile);
 							mntmAddEntry.setEnabled(true);
 						} catch (Exception e1) {
 							JOptionPane.showMessageDialog(frame,
@@ -337,13 +368,15 @@ public class MainWindow {
 						}
 					} else {
 						lex = LexiconUtils.readFromXML(cFile);
-						lex.sort();
-						for (CebuanoLexiconEntry entry : lex.getEntries())
-							lmEntries.addElement(entry);
-						mntmAddEntry.setEnabled(true);
-						mntmSaveAs.setEnabled(true);
-						btnSearch.setEnabled(true);
-						mntmSave.setEnabled(true);
+						if (lex != null) {
+							lex.sort();
+							for (CebuanoLexiconEntry entry : lex.getEntries())
+								lmEntries.addElement(entry);
+							mntmAddEntry.setEnabled(true);
+							mntmSaveAs.setEnabled(true);
+							btnSearch.setEnabled(true);
+							mntmSave.setEnabled(true);
+						}
 						refresh();
 					}
 
@@ -381,18 +414,18 @@ public class MainWindow {
 				save();
 			}
 		});
-		
-		list.addListSelectionListener(new ListSelectionListener(){
+
+		list.addListSelectionListener(new ListSelectionListener() {
 
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
-				if(list.getSelectedIndex() == -1){
+				if (list.getSelectedIndex() == -1) {
 					mntmEditSelectedEntry.setEnabled(false);
 					mntmRemoveEntry.setEnabled(false);
 				}
-		        refresh();
+				refresh();
 			}
-			
+
 		});
 	}
 
@@ -415,9 +448,11 @@ public class MainWindow {
 
 				for (CebuanoLexiconSense s : e.getSenses()) {
 					for (String sl : s.getSublemmas()) {
-						diff = Levenshtein.getLevenshteinDistance(sl, text);
-						if (sl.startsWith(text)) {
-							res.add(new RatedSense(s, diff));
+						if (sl != null) {
+							diff = Levenshtein.getLevenshteinDistance(sl, text);
+							if (sl.startsWith(text)) {
+								res.add(new RatedSense(s, diff));
+							}
 						}
 					}
 				}
@@ -425,7 +460,7 @@ public class MainWindow {
 			Collections.sort(res);
 			for (RatedSense rs : res) {
 				sb.append("S: ");
-				sb.append(LexiconUtils.generateHtml(rs.getSense(),true));
+				sb.append(LexiconUtils.generateHtml(rs.getSense()));
 				sb.append("<br><br>");
 			}
 
@@ -441,13 +476,13 @@ public class MainWindow {
 
 	private void save() {
 		updateLexicon();
-		if(!cFile.exists()){
+		if (!cFile.exists()) {
 			String name = cFile.getName();
-			if(!name.endsWith(".xml"))
+			if (!name.endsWith(".xml"))
 				cFile = new File(cFile.getParent(), name.concat(".xml"));
 		}
 		try {
-			LexiconUtils.saveAsXML(lex,cFile);
+			LexiconUtils.saveAsXML(lex, cFile);
 			int count = lex.getEntries().size();
 			String entry = (count == 1) ? " entry" : " entries";
 			JOptionPane.showMessageDialog(frame, count + entry
@@ -465,9 +500,11 @@ public class MainWindow {
 		updateLexicon();
 		if (cFile != null)
 			frame.setTitle(cFile.getAbsolutePath());
-		CebuanoLexiconEntry selected = (CebuanoLexiconEntry) list.getSelectedValue();
+		CebuanoLexiconEntry selected = (CebuanoLexiconEntry) list
+				.getSelectedValue();
 		if (selected != null) {
-			textArea.setText("<html>" + LexiconUtils.generateHtml(selected) + "</html>");
+			textArea.setText("<html>" + LexiconUtils.generateHtml(selected)
+					+ "</html>");
 			mntmRemoveEntry.setEnabled(true);
 			mntmEditSelectedEntry.setEnabled(true);
 			textArea.select(1, 1);
@@ -478,10 +515,16 @@ public class MainWindow {
 
 	private void updateLexicon() {
 		lex = new CebuanoLexicon();
-		lex.setEntries(lmEntries.toArray());
+		List<CebuanoLexiconEntry> entries = new ArrayList<CebuanoLexiconEntry>();
+		for (Object o : lmEntries.toArray()) {
+			CebuanoLexiconEntry entry = (CebuanoLexiconEntry) o;
+			if (entry != null)
+				entries.add(entry);
+		}
+		lex.setEntries(entries);
 	}
-	
-	private void sortLM(){
+
+	private void sortLM() {
 		lex.sort();
 		Object[] entries = lmEntries.toArray();
 		Arrays.sort(entries);

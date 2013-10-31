@@ -3,22 +3,36 @@ package teamgb.dictionary.lexicon;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CebuanoLexiconEntry implements Comparable<CebuanoLexiconEntry>{
-	private int id;
-	private String lemma;
-	private List<CebuanoLexiconSense> senses;
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
+import org.simpleframework.xml.Root;
 
-	public CebuanoLexiconEntry(){
-		id = 0;
-		lemma = null;
-		senses = new ArrayList<CebuanoLexiconSense>();
-	}
+@Root(name="ENTRY")
+public class CebuanoLexiconEntry implements Comparable<CebuanoLexiconEntry>{
+	@Element(name="ID")
+	private int id;
 	
-	public CebuanoLexiconEntry(int id, String lemma) {
-		super();
+	@Element(name="LEMMA")
+	private String lemma;
+	
+	@ElementList(name="SENSES")
+	private ArrayList<CebuanoLexiconSense> senses; 
+	
+	public CebuanoLexiconEntry(@Element(name="ID") int id, @Element(name="LEMMA") String lemma) {
 		this.id = id;
 		this.lemma = lemma;
-		this.senses = new ArrayList<CebuanoLexiconSense>();
+	}
+	
+	public CebuanoLexiconEntry(){
+		
+	}
+
+	public List<CebuanoLexiconSense> getSenses() {
+		return senses;
+	}
+
+	public void setSenses(ArrayList<CebuanoLexiconSense> senses) {
+		this.senses = senses;
 	}
 
 	public int getId() {
@@ -36,36 +50,10 @@ public class CebuanoLexiconEntry implements Comparable<CebuanoLexiconEntry>{
 	public void setLemma(String lemma) {
 		this.lemma = lemma;
 	}
-
-	public List<CebuanoLexiconSense> getSenses() {
-		return senses;
-	}
 	
-	public boolean addSense(CebuanoLexiconSense sense){
-		return senses.add(sense);
-	}
-
-	public void setSenses(List<CebuanoLexiconSense> list) {
-		this.senses = list;
-	}
-
 	@Override
 	public String toString() {
 		return lemma;
-	}
-
-	public void setSenses(Object[] array) {
-		senses = new ArrayList<CebuanoLexiconSense>();
-		for(Object o : array)
-			addSense((CebuanoLexiconSense) o);
-	}
-	
-	public List<String> getSublemmas(){
-		List<String> sls = new ArrayList<String>();
-		for(CebuanoLexiconSense s : this.getSenses()){
-			sls.addAll(s.getSublemmas());
-		}
-		return sls;
 	}
 
 	@Override

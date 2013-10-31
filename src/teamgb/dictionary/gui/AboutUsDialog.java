@@ -6,7 +6,6 @@ import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -15,7 +14,7 @@ import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-public class AboutMe extends JDialog {
+public class AboutUsDialog extends JDialog {
 
 	/**
 	 * 
@@ -27,14 +26,14 @@ public class AboutMe extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public AboutMe() {
+	public AboutUsDialog() {
 		setBounds(100, 100, 290, 180);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new BorderLayout(0, 0));
 		{
-			JLabel lblNewLabel = new JLabel("\u00A9 Gilz");
+			JLabel lblNewLabel = new JLabel("\u00A9 Capiral, Gordo, Mila, Pates");
 			lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 			contentPanel.add(lblNewLabel);
 		}

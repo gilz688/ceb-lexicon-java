@@ -108,8 +108,8 @@ public class ExampleDialog extends JDialog {
 			okButton.setEnabled(false);
 		} else {
 			setTitle("Edit " + type);
-			textField_English.setText(selectedEx.getEng_example());
-			textField_Cebuano.setText(selectedEx.getCeb_example());
+			textField_English.setText(selectedEx.getEnglishTranslation());
+			textField_Cebuano.setText(selectedEx.getExample());
 		}
 	}
 
@@ -123,8 +123,8 @@ public class ExampleDialog extends JDialog {
 
 	public CebuanoLexiconExample getInput() {
 		CebuanoLexiconExample ex = new CebuanoLexiconExample();
-		ex.setEng_example(textField_English.getText());
-		ex.setCeb_example(textField_Cebuano.getText());
+		ex.setEnglishTranslation(textField_English.getText());
+		ex.setExample(textField_Cebuano.getText());
 		return ex;
 	}
 }

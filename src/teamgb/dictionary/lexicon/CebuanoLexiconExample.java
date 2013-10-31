@@ -1,27 +1,41 @@
 package teamgb.dictionary.lexicon;
 
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.Root;
+
+@Root(name="EXAMPLE-E")
 public class CebuanoLexiconExample {
-	private String eng_example;
-	private String ceb_example;
+	@Element(name="CEB")
+	private String example;
+	@Element(name="ENG")
+	private String englishTranslation;
 	
-	public String getEng_example() {
-		return eng_example;
+	public CebuanoLexiconExample(@Element(name="CEB") String example, @Element(name="ENG") String englishTranslation){
+		this.example = example;
+		this.englishTranslation = englishTranslation;
 	}
 	
-	public void setEng_example(String eng_example) {
-		this.eng_example = eng_example;
+	public CebuanoLexiconExample() {
+	}
+
+	public String getExample(){
+		return example;
 	}
 	
-	public String getCeb_example() {
-		return ceb_example;
+	public String getEnglishTranslation() {
+		return englishTranslation;
 	}
 	
-	public void setCeb_example(String ceb_example) {
-		this.ceb_example = ceb_example;
+	public void setExample(String example){
+		this.example = example;
 	}
+	
+	public void setEnglishTranslation(String englishTranslation){
+		this.englishTranslation = englishTranslation;
+	}	
 	
 	@Override
 	public String toString(){
-		return ceb_example +" ("+eng_example+")";
+		return example +" ("+englishTranslation+")";
 	}
 }

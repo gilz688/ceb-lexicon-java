@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
@@ -19,6 +20,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import teamgb.dictionary.gui.validation.EmptyDocumentListener;
+import teamgb.dictionary.lexicon.CebuanoLexicon;
 import teamgb.dictionary.lexicon.CebuanoLexiconEntry;
 import teamgb.dictionary.lexicon.CebuanoLexiconSense;
 
@@ -166,7 +168,12 @@ public class EntryDialog extends JDialog {
 				entry = new CebuanoLexiconEntry();
 				entry.setId(Integer.parseInt(idTextField.getText()));
 				entry.setLemma(lemmaTextField.getText());
-				entry.setSenses(lmSenses.toArray());
+				ArrayList<CebuanoLexiconSense> senses = new ArrayList<CebuanoLexiconSense>();
+				for(Object o : lmSenses.toArray()){
+					CebuanoLexiconSense sense = (CebuanoLexiconSense) o;
+					senses.add(sense);
+				}
+				entry.setSenses(senses);
 				selected = Choice.OK;
 				setVisible(false);
 				dispose();

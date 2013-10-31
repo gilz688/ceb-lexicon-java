@@ -1,9 +1,12 @@
 package teamgb.dictionary.gui;
+
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -18,15 +21,13 @@ import javax.swing.border.EmptyBorder;
 
 import teamgb.dictionary.gui.validation.EmptyDocumentListener;
 import teamgb.dictionary.lexicon.CebuanoLexiconExample;
-import teamgb.dictionary.lexicon.PartOfSpeech;
 import teamgb.dictionary.lexicon.CebuanoLexiconSense;
+import teamgb.dictionary.lexicon.PartOfSpeech;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
-import javax.swing.DefaultComboBoxModel;
-
 
 public class SenseDialog extends JDialog {
 
@@ -41,7 +42,7 @@ public class SenseDialog extends JDialog {
 	private JTextField glossTextField;
 
 	public enum Choice {
-	    OK, CANCEL
+		OK, CANCEL
 	}
 
 	/**
@@ -55,88 +56,82 @@ public class SenseDialog extends JDialog {
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new FormLayout(new ColumnSpec[] {
-				FormFactory.RELATED_GAP_COLSPEC,
-				FormFactory.DEFAULT_COLSPEC,
-				FormFactory.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("default:grow"),
+				FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC,
 				FormFactory.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("default:grow"),
 				FormFactory.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("default:grow"),
-				FormFactory.RELATED_GAP_COLSPEC,},
-			new RowSpec[] {
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("default:grow"),
+				FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] {
+				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
 				RowSpec.decode("default:grow"),
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
 				RowSpec.decode("default:grow"),
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,}));
+				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC, }));
 		{
 			JLabel lblPOS = new JLabel("POS:");
 			contentPanel.add(lblPOS, "2, 2, right, default");
 		}
-			posComboBox = new JComboBox(new DefaultComboBoxModel(PartOfSpeech.values()));
-			contentPanel.add(posComboBox, "4, 2, 5, 1, fill, default");
-			
+		posComboBox = new JComboBox(new DefaultComboBoxModel(
+				PartOfSpeech.values()));
+		contentPanel.add(posComboBox, "4, 2, 5, 1, fill, default");
+
 		{
 			JLabel lblGloss = new JLabel("GLOSS:");
 			lblGloss.setHorizontalAlignment(SwingConstants.RIGHT);
 			contentPanel.add(lblGloss, "2, 4, right, default");
 		}
 
-			glossTextField = new JTextField();
-			contentPanel.add(glossTextField, "4, 4, 5, 1, fill, default");
-			glossTextField.setColumns(10);
+		glossTextField = new JTextField();
+		contentPanel.add(glossTextField, "4, 4, 5, 1, fill, default");
+		glossTextField.setColumns(10);
 
 		{
 			JLabel lblSL = new JLabel("SUB-LEMMAS:");
 			contentPanel.add(lblSL, "2, 6, right, default");
 		}
-		
-			
+
 		JScrollPane slScrollPane = new JScrollPane();
 		contentPanel.add(slScrollPane, "4, 6, 5, 3, fill, fill");
 		final DefaultListModel<String> lmSL = new DefaultListModel<String>();
 		final JList<String> slList = new JList<String>(lmSL);
 		slScrollPane.setViewportView(slList);
-		
+
 		final JButton btnEditSL = new JButton("Edit");
-			btnEditSL.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					try {
-						String selectedSL = (String) slList.getSelectedValue();
-						int index = slList.getSelectedIndex();
-						AddEditStringDialog dialog = new AddEditStringDialog(selectedSL,"SL-E");
-						AddEditStringDialog.Choice choice = dialog.showDialog();
-						if(choice == AddEditStringDialog.Choice.OK){
-							selectedSL = dialog.getInput();
-							lmSL.set(index, selectedSL);
-						}
-					} catch (Exception exception) {
-						exception.printStackTrace();
+		btnEditSL.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					String selectedSL = (String) slList.getSelectedValue();
+					int index = slList.getSelectedIndex();
+					AddEditStringDialog dialog = new AddEditStringDialog(
+							selectedSL, "SL-E");
+					AddEditStringDialog.Choice choice = dialog.showDialog();
+					if (choice == AddEditStringDialog.Choice.OK) {
+						selectedSL = dialog.getInput();
+						lmSL.set(index, selectedSL);
 					}
+				} catch (Exception exception) {
+					exception.printStackTrace();
 				}
-			});
-			contentPanel.add(btnEditSL, "6, 10");
+			}
+		});
+		contentPanel.add(btnEditSL, "6, 10");
 		{
 			JButton btnAddSL = new JButton("Add");
 			btnAddSL.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					try {
-						AddEditStringDialog dialog = new AddEditStringDialog(null,"SL-E");
+						AddEditStringDialog dialog = new AddEditStringDialog(
+								null, "SL-E");
 						AddEditStringDialog.Choice choice = dialog.showDialog();
-						if(choice == AddEditStringDialog.Choice.OK){
+						if (choice == AddEditStringDialog.Choice.OK) {
 							lmSL.addElement(dialog.getInput());
 							btnEditSL.setEnabled(true);
 						}
@@ -154,9 +149,9 @@ public class SenseDialog extends JDialog {
 				public void actionPerformed(ActionEvent e) {
 					int selectedIndex = slList.getSelectedIndex();
 					if (selectedIndex != -1) {
-					    lmSL.remove(selectedIndex);
-					    if(lmSL.isEmpty())
-					    	btnEditSL.setEnabled(false);
+						lmSL.remove(selectedIndex);
+						if (lmSL.isEmpty())
+							btnEditSL.setEnabled(false);
 					}
 				}
 			});
@@ -170,34 +165,38 @@ public class SenseDialog extends JDialog {
 		JScrollPane exScrollPane = new JScrollPane();
 		contentPanel.add(exScrollPane, "4, 12, 5, 3, fill, fill");
 		final DefaultListModel<CebuanoLexiconExample> lmEx = new DefaultListModel<CebuanoLexiconExample>();
-		final JList<CebuanoLexiconExample> examplesList = new JList<CebuanoLexiconExample>(lmEx);
+		final JList<CebuanoLexiconExample> examplesList = new JList<CebuanoLexiconExample>(
+				lmEx);
 		exScrollPane.setViewportView(examplesList);
 		final JButton btnEditEx = new JButton("Edit");
-			btnEditEx.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					try {
-						CebuanoLexiconExample selectedEx = (CebuanoLexiconExample) examplesList.getSelectedValue();
-						int index = examplesList.getSelectedIndex();
-						ExampleDialog dialog = new ExampleDialog(selectedEx,"EXAMPLE-E");
-						ExampleDialog.Choice choice = dialog.showDialog();
-						if(choice == ExampleDialog.Choice.OK){
-							selectedEx = dialog.getInput();
-							lmEx.set(index, selectedEx);
-						}
-					} catch (Exception exception) {
-						exception.printStackTrace();
+		btnEditEx.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					CebuanoLexiconExample selectedEx = (CebuanoLexiconExample) examplesList
+							.getSelectedValue();
+					int index = examplesList.getSelectedIndex();
+					ExampleDialog dialog = new ExampleDialog(selectedEx,
+							"EXAMPLE-E");
+					ExampleDialog.Choice choice = dialog.showDialog();
+					if (choice == ExampleDialog.Choice.OK) {
+						selectedEx = dialog.getInput();
+						lmEx.set(index, selectedEx);
 					}
+				} catch (Exception exception) {
+					exception.printStackTrace();
 				}
-			});
-			contentPanel.add(btnEditEx, "6, 16");
+			}
+		});
+		contentPanel.add(btnEditEx, "6, 16");
 		{
 			JButton btnAddEx = new JButton("Add");
 			btnAddEx.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					try {
-						ExampleDialog dialog = new ExampleDialog(null,"EXAMPLE-E");
+						ExampleDialog dialog = new ExampleDialog(null,
+								"EXAMPLE-E");
 						ExampleDialog.Choice choice = dialog.showDialog();
-						if(choice == ExampleDialog.Choice.OK){
+						if (choice == ExampleDialog.Choice.OK) {
 							lmEx.addElement(dialog.getInput());
 							btnEditEx.setEnabled(true);
 						}
@@ -214,72 +213,90 @@ public class SenseDialog extends JDialog {
 				public void actionPerformed(ActionEvent e) {
 					int selectedIndex = examplesList.getSelectedIndex();
 					if (selectedIndex != -1) {
-					    lmEx.remove(selectedIndex);
-					    if(lmEx.isEmpty())
-					    	btnEditEx.setEnabled(false);
+						lmEx.remove(selectedIndex);
+						if (lmEx.isEmpty())
+							btnEditEx.setEnabled(false);
 					}
 				}
 			});
 			contentPanel.add(btnDeleteEx, "8, 16");
 		}
-			JPanel buttonPane = new JPanel();
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-				final JButton okButton = new JButton("OK");
-				okButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						selected = Choice.OK;
-						sense = new CebuanoLexiconSense();
-						sense.setPartOfSpeech(PartOfSpeech.valueOf(posComboBox.getSelectedItem().toString()));
-						sense.setGloss(glossTextField.getText());
-						sense.setExamples(lmEx.toArray());
-						sense.setSublemmas(lmSL.toArray());
-						setVisible(false);
-						dispose();
+		JPanel buttonPane = new JPanel();
+		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		getContentPane().add(buttonPane, BorderLayout.SOUTH);
+		final JButton okButton = new JButton("OK");
+		okButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				selected = Choice.OK;
+				sense = new CebuanoLexiconSense();
+				sense.setPartOfSpeech(PartOfSpeech.valueOf(posComboBox
+						.getSelectedItem().toString()));
+				sense.setGloss(glossTextField.getText());
+
+				ArrayList<CebuanoLexiconExample> examples = new ArrayList<CebuanoLexiconExample>();
+				for (Object o : lmEx.toArray()) {
+					CebuanoLexiconExample example = (CebuanoLexiconExample) o;
+					if (example != null)
+						examples.add(example);
+				}
+				sense.setExamples(examples);
+
+				ArrayList<String> sublemmas = new ArrayList<String>();
+				for (Object o : lmSL.toArray()) {
+					String sublemma = (String) o;
+					if (sublemma != null) {
+						sublemmas.add(sublemma);
 					}
-				});
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
-				glossTextField.getDocument().addDocumentListener(new EmptyDocumentListener(okButton));
-			{
-				JButton cancelButton = new JButton("Cancel");
-				cancelButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						setVisible(false);
-						dispose();
-					}
-				});
-				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
+				}
+				sense.setSublemmas(sublemmas);
+				setVisible(false);
+				dispose();
 			}
-		
-		if(sense == null){
+		});
+		okButton.setActionCommand("OK");
+		buttonPane.add(okButton);
+		getRootPane().setDefaultButton(okButton);
+		glossTextField.getDocument().addDocumentListener(
+				new EmptyDocumentListener(okButton));
+		{
+			JButton cancelButton = new JButton("Cancel");
+			cancelButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					setVisible(false);
+					dispose();
+				}
+			});
+			cancelButton.setActionCommand("Cancel");
+			buttonPane.add(cancelButton);
+		}
+
+		if (sense == null) {
 			setTitle("Add New SENSE");
 			okButton.setEnabled(false);
 			sense = new CebuanoLexiconSense();
 			btnEditSL.setEnabled(false);
 			btnEditEx.setEnabled(false);
-		}
-		else{
+		} else {
 			setTitle("Edit SENSE");
-			if(sense.getPartOfSpeech() != null)
+			if (sense.getPartOfSpeech() != null)
 				posComboBox.setSelectedItem(sense.getPartOfSpeech());
 			glossTextField.setText(sense.getGloss());
-			for(String sl : sense.getSublemmas())
-				lmSL.addElement(sl);
-			for(CebuanoLexiconExample ex : sense.getExamples())
+			for (String sublemma : sense.getSublemmas()) {
+				if (sublemma != null)
+					lmSL.addElement(sublemma);
+			}
+			for (CebuanoLexiconExample ex : sense.getExamples())
 				lmEx.addElement(ex);
-			
-			if(lmSL.isEmpty())
+
+			if (lmSL.isEmpty())
 				btnEditSL.setEnabled(false);
-			
-			if(lmEx.isEmpty())
+
+			if (lmEx.isEmpty())
 				btnEditEx.setEnabled(false);
 		}
 	}
-	
-	public Choice showDialog(){
+
+	public Choice showDialog() {
 		setLocationRelativeTo(null);
 		setModalityType(SenseDialog.ModalityType.APPLICATION_MODAL);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -287,7 +304,7 @@ public class SenseDialog extends JDialog {
 		return selected;
 	}
 
-	public CebuanoLexiconSense getInput(){
+	public CebuanoLexiconSense getInput() {
 		return sense;
 	}
 
